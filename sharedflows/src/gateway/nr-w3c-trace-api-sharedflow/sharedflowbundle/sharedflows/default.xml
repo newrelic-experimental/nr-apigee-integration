@@ -1,0 +1,6 @@
+<SharedFlow name="default">
+    <Step>
+        <Name>NRTraceAPI</Name>
+        <Condition>(dt.sendNRTracePayload = true)</Condition>
+    </Step>
+</SharedFlow>

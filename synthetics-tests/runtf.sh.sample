@@ -1,0 +1,11 @@
+#!/bin/bash
+
+## RENAME THIS FILE runtf.sh and make sure it's executable! Don't check it into Git (it's in .gitignore)
+
+export NEW_RELIC_ACCOUNT_ID="0"  # Account id for creating the terraform resources
+export NEW_RELIC_API_KEY="NRAK-xxx"  # A User API Key for creating the terraform resources
+export TF_VAR_new_relic_region="US"  # Your New Relic region ["US" | "EU"]
+export TF_VAR_apigee_protocol="https"  # Your Apigee proxy protocol
+export TF_VAR_apigee_host="xxx.nip.io"  # Your Apigee host
+
+bash -c "terraform $1 $2"

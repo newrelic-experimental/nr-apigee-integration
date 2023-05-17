@@ -1,0 +1,8 @@
+runtf.sh
+runtf-*.sh
+.DS_Store
+.terraform*
+terraform*
+.vscode*
+target/
+nrtrace.properties

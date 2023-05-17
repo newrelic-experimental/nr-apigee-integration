@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ServiceCallout async="true" continueOnError="true" enabled="true" name="NRTraceAPI">
+    <DisplayName>NRTraceAPI</DisplayName>
+    <Properties/>
+    <Request clearPayload="true">
+        <Set>
+            <Headers>
+                <Header name="Api-Key">{propertyset.NRTracePropSet.LICENSE_KEY}</Header>
+                <Header name="Data-Format">newrelic</Header>
+                <Header name="Data-Format-Version">1</Header>
+            </Headers>
+            <Verb>POST</Verb>
+            <Payload contentType="application/json">
+                [
+                  {
+                    "common": {
+                      "attributes": {
+                        "apiproxy.name": "{apiproxy.name}",
+                        "apiproxy.revision": "{apiproxy.revision}",
+                        "entity.name": "{apiproxy.name}",
+                        "environment.name": "{environment.name}",
+                        "host": "{request.header.host}",
+                        "is.error": "{is.error}",
+                        "message.status.code": "{message.status.code}",
+                        "organization.name": "{organization.name}",
+                        "proxy.basepath": "{proxy.basepath}",
+                        "proxy.client.ip": "{proxy.client.ip}",
+                        "proxy.name": "{proxy.name}",
+                        "proxy.pathsuffix": "{proxy.pathsuffix}",
+                        "proxy.url": "{proxy.url}",
+                        "request.verb": "{request.verb}",
+                        "request.url": "{request.url}",
+                        "selfSampled": {dt.selfSampled},
+                        "service.name": "{apiproxy.name}"
+                      }
+                    },
+                    "spans": [
+                      {
+                        "trace.id": "{dt.traceID}",
+                        "id": "{dt.apigeeSpanID}",
+                        "attributes": {
+                          "client.received.start.timestamp": {client.received.start.timestamp},
+                          "client.sent.end.timestamp": {client.sent.end.timestamp},
+                          "name": "{apiproxy.name}",
+                          "parent.id": "{dt.incomingParentID}"
+                        },
+                        "timestamp": {dt.apigeeStartTime}
+                      },
+                      {
+                        "trace.id": "{dt.traceID}",
+                        "id": "{dt.targetSpanID}",
+                        "attributes": {
+                          "duration.ms": {dt.targetDuration},
+                          "target.sent.start.timestamp": {target.sent.start.timestamp},
+                          "target.received.end.timestamp": {target.received.end.timestamp},
+                          "name": "{target.name}",
+                          "parent.id": "{dt.apigeeSpanID}",
+                          "response.code": {message.status.code}
+                        },
+                        "timestamp": {dt.targetStart}
+                      }
+                      {dt.internalSpans}
+                    ]
+                  }
+                ]
+            </Payload>
+        </Set>
+        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+    </Request>
+    <HTTPTargetConnection>
+        <Properties/>
+        <URL>https://{propertyset.NRTracePropSet.ENDPOINT_HOST}{propertyset.NRTracePropSet.ENDPOINT_PATH}</URL>
+    </HTTPTargetConnection>
+</ServiceCallout>
