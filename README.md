@@ -11,14 +11,14 @@ Assumes an Apigee-X environment, but there is no reason this shouldn't work with
 * [gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
 ### Configuration properties file
-Update the [nrtrace.properties.sample](nrtrace.properties.sample) properties file to provide the configuration for your environment, and rename it `nrtrace.properties`. **Important do not commit this new file to git!** (It should be ignored in `.gitignore` already.)
-The nrtrace.properties file contains values including:
+Update the [newrelic.properties.sample](newrelic.properties.sample) properties file to provide the configuration for your environment, and rename it `newrelic.properties`. **Important do not commit this new file to git!** (It should be ignored in `.gitignore` already.)
+The newrelic.properties file contains values including:
 * LICENSE_KEY: your New Relic [Ingest License API key](https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key)
 * ENDPOINT_HOST: either `trace-api.newrelic.com` or `trace-api.eu.newrelic.com` depending on whether your New Relic account is hosted in the US or EU region respectively
 * ENDPOINT_PATH: leave as `/trace/v1`
 * SLOW_REQUEST_AUTO_SAMPLE_MS: The time, in milliseconds, that will initiate auto-sampling of slow proxy requests. Suggested `5000`ms (5 seconds)
 
-Create, or update a propertyset named `NRTracePropSet` for your environment using [props-create.sh](props-create.sh), and [props-update.sh](props-update.sh) respectively. Use [props-get.sh](props-get.sh) to verify the property set has been created successfully.
+Create, or update a propertyset named `NewRelicPropSet` for your environment using [props-create.sh](props-create.sh), and [props-update.sh](props-update.sh) respectively. Use [props-get.sh](props-get.sh) to verify the property set has been created successfully. Use [props-delete.sh](props-delete.sh) to delete the property set.
 
 ### Environment variables
 Set the following environment variables:
@@ -29,20 +29,27 @@ If the environment variables are not set, they can alternatively be provided in 
 * [props-create.sh](props-create.sh), [props-update.sh](props-update.sh), and [props-get.sh](props-get.sh)
 * deploy.sh for each of the proxies 
 
+### EU region
+If you are using the EU region it will be necessary to update the [ML-NRLogging.xml](sharedflows/src/gateway/nr-logging-sharedflow/sharedflowbundle/policies/ML-NRLogging.xml) file to replace the US region TCP endpoint with the EU endpoint in the host tag. Apigee does not permit setting the host using a variable, e.g. a property set property.
+
 ### Shared flows
 The instrumentation examples in this repository make use of [shared flows](https://cloud.google.com/apigee/docs/api-platform/fundamentals/shared-flows).
 
 Example API proxies are contained in the [examples](examples) directory. The example proxies are dependent on the following shared flows:
-* nr-w3c-trace-prepare-sharedflow
+* nr-logging-sharedflow
 * nr-w3c-trace-api-sharedflow
+* nr-w3c-trace-prepare-sharedflow
 
 To install the shared flows:
 1. Execute the [deploy.sh](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-w3c-trace-api-sharedflow](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow) directory.
 2. Execute the [deploy.sh](sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow) directory.
+3. Execute the [deploy.sh](sharedflows/src/gateway/nr-logging-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-logging-sharedflow](sharedflows/src/gateway/nr-logging-sharedflow) directory.
 
 ### Example flow
-To install the example flow:
-1. Execute the [deploy.sh](examples/swapi-trace/deploy.sh) script from within the [examples/swapi-trace](examples/swapi-trace) directory.
+To install the example flows:
+1. Execute the [deploy.sh](examples/swapi-logging/deploy.sh) script from within the [examples/swapi-logging](examples/swapi-logging) directory.
+2. Execute the [deploy.sh](examples/swapi-trace/deploy.sh) script from within the [examples/swapi-trace](examples/swapi-trace) directory.
+3. Execute the [deploy.sh](examples/swapi-trace-and-logging/deploy.sh) script from within the [examples/swapi-trace-and-logging](examples/swapi-trace-and-logging) directory.
 
 ## Synthetics tests for the example API proxies
 Terraform configuration is available to create synthetics monitors to exercise the sample API proxies. Take a look at the [README.md](synthetics-tests/README.md) file in the [synthetics-tests](synthetics-tests) directory for more information.

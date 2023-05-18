@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ServiceCallout async="true" continueOnError="true" enabled="true" name="NRTraceAPI">
-    <DisplayName>NRTraceAPI</DisplayName>
+<ServiceCallout async="true" continueOnError="true" enabled="true" name="SC-NRTraceAPI">
+    <DisplayName>SC-NRTraceAPI</DisplayName>
     <Properties/>
     <Request clearPayload="true">
         <Set>
             <Headers>
-                <Header name="Api-Key">{propertyset.NRTracePropSet.LICENSE_KEY}</Header>
+                <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
                 <Header name="Data-Format">newrelic</Header>
                 <Header name="Data-Format-Version">1</Header>
             </Headers>
@@ -69,6 +69,6 @@
     </Request>
     <HTTPTargetConnection>
         <Properties/>
-        <URL>https://{propertyset.NRTracePropSet.ENDPOINT_HOST}{propertyset.NRTracePropSet.ENDPOINT_PATH}</URL>
+        <URL>https://{propertyset.NewRelicPropSet.ENDPOINT_HOST}{propertyset.NewRelicPropSet.ENDPOINT_PATH}</URL>
     </HTTPTargetConnection>
 </ServiceCallout>

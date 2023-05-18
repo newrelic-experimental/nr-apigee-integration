@@ -3,7 +3,7 @@
   <DisplayName>nr-w3c-trace-api-sharedflow</DisplayName>
   <Description>Shared flow to call New Relic Trace API distributed tracing</Description>  
   <Policies>
-    <Policy>NRTraceAPI</Policy>
+    <Policy>SC-NRTraceAPI</Policy>
   </Policies>
   <SharedFlows>
     <SharedFlow>default</SharedFlow>

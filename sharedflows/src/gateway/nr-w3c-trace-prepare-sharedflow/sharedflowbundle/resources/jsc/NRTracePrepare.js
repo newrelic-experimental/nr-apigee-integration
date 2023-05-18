@@ -129,7 +129,7 @@ var sendNRTracePayload = sampled;
 var selfSampled = false;
 
 //Sample anyway if response is slow
-var autosampleMillis = context.getVariable("propertyset.NRTracePropSet.SLOW_REQUEST_AUTO_SAMPLE_MS");
+var autosampleMillis = context.getVariable("propertyset.NewRelicPropSet.SLOW_REQUEST_AUTO_SAMPLE_MS");
 if (!sampled) {
     if ((end - apigeeStart) > autosampleMillis) { //apigee flows > ##ms get sampled and traced
         sendNRTracePayload = true;

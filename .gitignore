@@ -5,4 +5,4 @@ runtf-*.sh
 terraform*
 .vscode*
 target/
-nrtrace.properties
+newrelic.properties

@@ -3,10 +3,10 @@
   <DisplayName>nr-w3c-trace-prepare-sharedflow</DisplayName>
   <Description>Shared flow to prepare New Relic Trace API distributed tracing</Description>  
   <Policies>
-    <Policy>NRTracePrepare</Policy>
+    <Policy>JS-NRTracePrepare</Policy>
   </Policies>
   <Resources>
-    <Resource>jsc://NRTracePrepare.js</Resource>
+    <Resource>jsc://JS-NRTracePrepare.js</Resource>
   </Resources>
   <SharedFlows>
     <SharedFlow>default</SharedFlow>

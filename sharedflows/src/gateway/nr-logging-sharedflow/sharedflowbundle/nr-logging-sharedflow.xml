@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SharedFlowBundle revision="1" name="nr-logging-sharedflow">
+  <DisplayName>nr-logging-sharedflow</DisplayName>
+  <Description>Shared flow to send logs to the New Relic TCP endpoint</Description>  
+  <Policies>
+    <Policy>ML-NRLogging</Policy>
+  </Policies>
+  <SharedFlows>
+    <SharedFlow>default</SharedFlow>
+  </SharedFlows>
+</SharedFlowBundle>
