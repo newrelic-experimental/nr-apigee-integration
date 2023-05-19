@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<APIProxy revision="1" name="swapi-trace">
+<APIProxy revision="1" name="newrelic-logging">
   <DisplayName/>
   <Description/>
-  <BasePaths>/swapi/trace</BasePaths>
   <Policies/>
   <ProxyEndpoints>
     <ProxyEndpoint>default</ProxyEndpoint>

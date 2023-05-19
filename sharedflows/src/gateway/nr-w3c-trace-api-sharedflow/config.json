@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "test",
+      "policies": [
+        {
+          "name": "SC-NRTraceAPI.xml",
+          "tokens": [
+            {
+              "xpath": "/ServiceCallout/HTTPTargetConnection/URL",
+              "value": "https://trace-api.newrelic.com/trace/v1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

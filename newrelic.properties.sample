@@ -5,17 +5,3 @@
 #
 # New Relic License key: https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#ingest-license-key
 LICENSE_KEY=<your license key>
-
-#
-# API reporting endpoint.
-# See here: https://docs.newrelic.com/docs/distributed-tracing/trace-api/trace-api-general-requirements-limits/#requirements for other choices
-# Default value: trace-api.newrelic.com/trace/v1
-# Use trace-api.eu.newrelic.com/trace/v1 if your accounts are hosted in the EU region
-# Note that the protocol portion of the URL, https://, cannot be specified by a variable (see https://cloud.google.com/apigee/docs/api-platform/reference/policies/service-callout-policy#url-as-a-variable)
-ENDPOINT_HOST=trace-api.newrelic.com
-ENDPOINT_PATH=/trace/v1
-
-#
-# The time, in milliseconds, that will initiate auto-sampling of slow proxy requests. Suggested 5000ms (5 seconds)
-#
-SLOW_REQUEST_AUTO_SAMPLE_MS=5000

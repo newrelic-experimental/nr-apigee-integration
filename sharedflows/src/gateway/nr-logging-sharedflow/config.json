@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "test",
+      "policies": [
+        {
+          "name": "ML-NRLogging.xml",
+          "tokens": [
+            {
+              "xpath": "/MessageLogging/Syslog/Host",
+              "value": "newrelic.syslog.nr-data.net"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,8 +3,7 @@
   <DisplayName>ML-NRLogging</DisplayName>
   <Syslog>
     <Message>{propertyset.NewRelicPropSet.LICENSE_KEY} { "apiproxy.name": "{apiproxy.name}", "client.received.start.time": "{client.received.start.time}", "client.received.start.timestamp": "{client.received.start.timestamp}", "client.sent.end.time": "{client.sent.end.time}", "client.sent.end.timestamp": "{client.sent.end.timestamp}", "environment.name": "{environment.name}", "error.content": "{escapeJSON(error.content)}", "error.status.code": "{error.status.code}", "is.error": "{is.error}", "messageid": "{messageid}", "organization.name": "{organization.name}", "proxy.client.ip": "{proxy.client.ip}", "request.verb": "{request.verb}", "request.uri": "{escapeJSON(request.uri)}", "request.url": "{escapeJSON(request.url)}", "response.content": "{escapeJSON(response.content)}", "response.status.code": "{response.status.code}", "service.name": "{apiproxy.name}", "target.ip": "{target.ip}", "target.sent.start.timestamp": "{target.sent.start.timestamp}", "target.received.end.timestamp": "{target.received.end.timestamp}", "trace.id": "{dt.traceID}" }</Message>
-    <!-- Change the host below to newrelic.syslog.eu.nr-data.net for the EU region. Apigee does not support variable substitution for the host. -->
-    <Host>newrelic.syslog.nr-data.net</Host>
+    <Host>replaced_by_config_json</Host>
     <Port>6514</Port>
     <Protocol>TCP</Protocol>
     <FormatMessage>true</FormatMessage>

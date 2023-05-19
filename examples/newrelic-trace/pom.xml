@@ -17,8 +17,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.newrelic.apigee</groupId>
-	<artifactId>swapi-trace-and-logging</artifactId>
+	<artifactId>newrelic-trace</artifactId>
 	<version>1.0</version>
-	<name>swapi-trace-and-logging</name>
+	<name>newrelic-trace</name>
 	<packaging>pom</packaging>
 </project>

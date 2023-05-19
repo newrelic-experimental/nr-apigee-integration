@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "test",
+      "policies": [
+        {
+          "name": "JS-NRTracePrepare.xml",
+          "tokens": [
+            {
+              "xpath": "/Javascript/Properties/Property[@name='autoSampleMillis']",
+              "value": 5000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

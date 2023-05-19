@@ -69,6 +69,6 @@
     </Request>
     <HTTPTargetConnection>
         <Properties/>
-        <URL>https://{propertyset.NewRelicPropSet.ENDPOINT_HOST}{propertyset.NewRelicPropSet.ENDPOINT_PATH}</URL>
+        <URL>replaced_by_config_json</URL>
     </HTTPTargetConnection>
 </ServiceCallout>
