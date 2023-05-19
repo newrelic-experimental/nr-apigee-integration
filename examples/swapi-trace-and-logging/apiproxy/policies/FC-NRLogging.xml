@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<FlowCallout continueOnError="false" enabled="true" name="FC-NRLogging">
+<FlowCallout continueOnError="true" enabled="true" name="FC-NRLogging">
   <DisplayName>FC-NRLogging</DisplayName>
   <Parameters/>
   <SharedFlowBundle>nr-logging-sharedflow</SharedFlowBundle>

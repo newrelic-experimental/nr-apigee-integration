@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<FlowCallout continueOnError="false" enabled="true" name="FC-NRTraceAPI">
+<FlowCallout continueOnError="true" enabled="true" name="FC-NRTraceAPI">
   <DisplayName>FC-NRTraceAPI</DisplayName>
   <Parameters/>
   <SharedFlowBundle>nr-w3c-trace-api-sharedflow</SharedFlowBundle>
