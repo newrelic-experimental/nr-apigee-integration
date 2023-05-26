@@ -122,7 +122,8 @@ var end = context.getVariable("target.received.end.timestamp");
 var apigeeStart = context.getVariable("client.received.start.timestamp")
 context.setVariable("dt.targetDuration", (end - start) + "");
 context.setVariable("dt.targetStart", start + "");
-context.setVariable("dt.apigeeDuration", (end - apigeeStart) + "");
+const now  = Date.now();
+context.setVariable("dt.apigeeDuration", (now - apigeeStart) + "");
 
 var sampled = context.getVariable("dt.sampled");
 var sendNRTracePayload = sampled;

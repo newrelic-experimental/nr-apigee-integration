@@ -19,7 +19,7 @@ Create, or update a propertyset named `NewRelicPropSet` for your environment usi
 
 ### Maven configuration
 If you are using the New Relic EU region, instead of the US region, change the host endpoint values.
-* For logging edit the [config.json](sharedflows/src/gateway/nr-logging-sharedflow/config.json)file. Use either `newrelic.syslog.nr-data.net` or `newrelic.syslog.eu.nr-data.net` depending on whether your New Relic account is hosted in the US or EU region respectively  
+* For logging edit the [config.json](sharedflows/src/gateway/nr-logging-sharedflow/config.json) file. Use either `newrelic.syslog.nr-data.net` or `newrelic.syslog.eu.nr-data.net` depending on whether your New Relic account is hosted in the US or EU region respectively  
 * For tracing edit the [config.json](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow/config.json) file. Use either `trace-api.newrelic.com` or `trace-api.eu.newrelic.com` depending on whether your New Relic account is hosted in the US or EU region respectively
 
 To configure the slow requests auto sample time edit the [config.json](sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow/config.json) file. This is the time, in milliseconds, that will initiate auto-sampling of slow proxy requests. Suggested `5000`ms (5 seconds)

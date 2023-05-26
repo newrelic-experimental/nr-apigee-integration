@@ -39,6 +39,7 @@
                         "trace.id": "{dt.traceID}",
                         "id": "{dt.apigeeSpanID}",
                         "attributes": {
+                          "duration.ms": {dt.apigeeDuration},
                           "client.received.start.timestamp": {client.received.start.timestamp},
                           "client.sent.end.timestamp": {client.sent.end.timestamp},
                           "name": "{apiproxy.name}",
