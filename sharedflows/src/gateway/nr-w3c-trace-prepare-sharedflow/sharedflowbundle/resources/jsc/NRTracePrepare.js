@@ -1,156 +1,165 @@
-//Generate 16 chars Hex Digits
-function randHex(len) {
-    var maxlen = 8,
-        min = Math.pow(16, Math.min(len, maxlen) - 1),
-        max = Math.pow(16, Math.min(len, maxlen)) - 1,
-        n = Math.floor(Math.random() * (max - min + 1)) + min,
-        r = n.toString(16);
-    while (r.length < len) {
-        r = r + randHex(len - maxlen);
+const scriptStart = Date.now();  // Record the time taken to run this script
+
+function parseW3CTraceId(traceId) {
+    // Define the regular expression pattern for parsing the trace ID
+    const pattern = /(\d{2})-([A-Za-z0-9]{32})-([A-Za-z0-9]{16})-(00|01)/;
+    // Match the trace ID against the pattern
+    const matches = traceId.match(pattern);
+    if (matches) {
+        // Extract components
+        w3cVerNum = matches[1];
+        w3cTraceId = matches[2];
+        w3cParentId = matches[3];
+        w3cTraceFlag = matches[4];
     }
-    return r;
+    return { w3cVerNum: w3cVerNum, w3cTraceId: w3cTraceId, w3cParentId: w3cParentId, w3cTraceFlag: w3cTraceFlag };
 }
 
-//Read W3C trace context
-var w3_traceparent = context.getVariable("request.header.traceparent");
-var w3_tracestate = context.getVariable("request.header.tracestate");
-//print("Length Trace Parent:"+w3_traceparent.length);
-//print("Length Trace State:"+w3_tracestate.length);
+// Generate a random Hex string of variable length
+function randomHexString(len) {
+    var hexString = "";
+    for (var i = 0; i < len; i++) {
+        hexString += (Math.floor(Math.random() * 16)).toString(16);
+    }
+    return hexString;
+}
 
-//Decode traceparent
-//print("w3 trace parent:"+w3_traceparent);
-if (w3_traceparent !== null) {
+function generateValidId(len) {
+    var id = randomHexString(len);
+    // Ids must not be all zeros
+    while (!(/[1-9a-f]/).test(id)) {
+        id = randomHexString(len);
+    }
+    return id;
+}
+
+function isProbabalistic() {
+    var isProbabalistic = false;
+    if (properties.tracesSamplerArg) {
+        isProbabalistic = Number(properties.tracesSamplerArg) > Math.random();
+    } else {
+        print("Sampler traceidratio requires a tracesSamplerArg");
+    }
+    return isProbabalistic;
+}
+
+function getSampled(traceFlag) {
+    /**
+     * Tracer sampler configuration:
+     *     - always_on - Sampler that always samples spans, regardless of the parent span’s sampling decision.
+     *     - always_off - Sampler that never samples spans, regardless of the parent span’s sampling decision.
+     *     - traceidratio - Sampler that samples probabalistically based on rate.
+     *     - parentbased_always_on - (default) Sampler that respects its parent span’s sampling decision, but otherwise always samples.
+     *     - parentbased_always_off - Sampler that respects its parent span’s sampling decision, but otherwise never samples.
+     *     - parentbased_traceidratio - Sampler that respects its parent span’s sampling decision, but otherwise samples probabalistically based on rate.
+     */
+    var isSampled;
+    var tracesSampler = String(properties.tracesSampler);  // properties are objects, and equality with strings doesn't work
+
+    if (tracesSampler === SAMPLER_ALWAYS_ON) {
+        isSampled = true;
+    } else if (tracesSampler === SAMPLER_ALWAYS_OFF) {
+        isSampled = false;
+    } else if (tracesSampler === SAMPLER_TRACE_ID_RATIO) {
+        isSampled = isProbabalistic(isSampled);
+    } else if (tracesSampler === SAMPLER_PARENT_BASED_ALWAYS_ON) {
+        if (traceFlag === W3C_TRACE_SAMPLED_FLAG) {
+            isSampled = true;
+        } else if (traceFlag === W3C_TRACE_NOT_SAMPLED_FLAG) {
+            isSampled = false;
+        } else {
+            isSampled = true;
+        }
+    } else if (tracesSampler === SAMPLER_PARENT_BASED_ALWAYS_OFF) {
+        if (traceFlag === W3C_TRACE_SAMPLED_FLAG) {
+            isSampled = true;
+        } else if (traceFlag === W3C_TRACE_NOT_SAMPLED_FLAG) {
+            isSampled = false;
+        } else {
+            isSampled = false;
+        }        
+    } else if (tracesSampler === SAMPLER_PARENT_BASED_TRACE_ID_RATIO) {
+        if (traceFlag === W3C_TRACE_SAMPLED_FLAG) {
+            isSampled = true;
+        } else if (traceFlag === W3C_TRACE_NOT_SAMPLED_FLAG) {
+            isSampled = false;
+        } else {
+            isSampled = isProbabalistic();
+        }
+    }
+    return isSampled;
+};
+
+const W3C_VER_NUM = "00";
+const W3C_TRACE_NOT_SAMPLED_FLAG = "00";
+const W3C_TRACE_SAMPLED_FLAG = "01";
+const SAMPLER_ALWAYS_ON = "always_on";
+const SAMPLER_ALWAYS_OFF = "always_off";
+const SAMPLER_TRACE_ID_RATIO = "traceidratio";
+const SAMPLER_PARENT_BASED_ALWAYS_ON = "parentbased_always_on";
+const SAMPLER_PARENT_BASED_ALWAYS_OFF = "parentbased_always_off";
+const SAMPLER_PARENT_BASED_TRACE_ID_RATIO = "parentbased_traceidratio";
+var w3cVerNum;
+var w3cTraceId;
+var w3cParentId;
+var w3cTraceFlag;
+
+// Read W3C trace context
+var w3cTraceparent = context.getVariable("request.header.traceparent");
+var w3cTracestate = context.getVariable("request.header.tracestate");
+
+// Decode traceparent
+if (w3cTraceparent) {
     try {
-        const regex = /\w+(?:\s*\w+)*/gm;
-        var m;
-        var w3vernum = "";
-        var w3traceid = "";
-        var w3parentid = "";
-        var w3traceflag = "";
-        var tracesampled = false;
-        var targetTraceState = 0;
-
-        while ((tp = regex.exec(w3_traceparent)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (tp.index === regex.lastIndex) {
-                regex.lastIndex++;
-            }
-
-            tp.forEach((match) => {
-                if (tp.index === 0) {
-                    w3vernum = match;
-                    //print("Version Num:" +w3vernum);
-                } else if (tp.index === 3) {
-                    w3traceid = match;
-                    //print("Trace Id:" +w3traceid);
-                } else if (tp.index > 52) {
-                    w3traceflag = match;
-                    //print("Trace Flag:" +w3traceflag);
-                } else {
-                    w3parentid = match;
-                    //print("Parent Id:" +w3parentid);
-                }
-            });
-        }
-
-        //Decode tracestate
-        //print("w3 trace state:"+w3_tracestate);
-        while ((ts = regex.exec(w3_tracestate)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (ts.index === regex.lastIndex) {
-                regex.lastIndex++;
-            }
-
-            ts.forEach((match) => {
-                if (ts.index > (w3_tracestate.length - 14)) {
-                    targetTraceState = match;
-                    print("Target tracestate list member :" + targetTraceState);
-                }
-            });
-        }
-        context.setVariable("dt.headersFound", true);
-
+        ({ w3cVerNum: w3cVerNum, w3cTraceId: w3cTraceId, w3cParentId: w3cParentId, w3cTraceFlag: w3cTraceFlag } = parseW3CTraceId(w3cTraceparent));  // ( .. ) around the assignment statement is required syntax when using object literal destructuring assignment without a declaration
     } catch (e) {
-        print("Something went wrong in decoding Trace Parent or State.");
+        print("Something went wrong in decoding Trace Parent.", w3cTraceparent);
     }
-
-    //Set trace sampled
-    if (w3traceflag === "01") {
-        tracesampled = true;
-    }
-    //print("Trace Sampled:"+tracesampled);
-
-    //Generate parentID/spanID for apigee and target
-    var apigeeSpanID = randHex(16);
-    var targetSpanID = randHex(16);
-
-    //Set the context variables
-    context.setVariable("dt.traceID", w3traceid); // the trace id, same for all spans
-    context.setVariable("dt.incomingParentID", w3parentid); // the incoming span id that is our parent
-    context.setVariable("dt.apigeeSpanID", apigeeSpanID); // a span id to cover the whole apigee flow
-    context.setVariable("dt.targetSpanID", targetSpanID); // a span id to just cover the target request
-    context.setVariable("dt.sampled", tracesampled); //indicates if incoming span is sampled
-    context.setVariable("dt.apigeeStartTime", context.getVariable("client.received.start.timestamp"));
-
-    //Rewrite the w3 trace parent header so that it has target as a parent span -- but only if sampled to avoid orphaning
-    if (tracesampled) {
-        //print("pre w3 parent"+w3_traceparent);
-        var np = w3_traceparent.indexOf(w3parentid);
-        var str1 = w3_traceparent.substr(0, np);
-        var str2 = w3_traceparent.substr(np + 16, w3_traceparent.length);
-        w3_traceparent = str1 + targetSpanID + str2;
-        context.setVariable("request.header.traceparent", w3_traceparent);
-        //print("post w3 parent"+w3_traceparent);
-
-        //print("pre w3 state"+w3_tracestate);
-        context.setVariable("dt.targetTraceState", targetTraceState);
-        var ns = w3_tracestate.indexOf(w3parentid);
-        var strs1 = w3_tracestate.substr(0, ns);
-        var strs2 = w3_tracestate.substr(ns + 16, w3_tracestate.length);
-        w3_tracestate = strs1 + targetSpanID + strs2;
-        context.setVariable("dt.w3TraceState", w3_tracestate);
-        context.setVariable("request.header.tracestate", w3_tracestate);
-        //print("post w3 state"+w3_tracestate);
-    }
+    print('W3C trace context included on inbound request');
 } else {
-    print('W3C trace headers not included on inbound request');
+    print('W3C trace context not included on inbound request');
 }
 
-//Get timestamp from the apigee flow variables
-var start = context.getVariable("target.sent.start.timestamp");
-var end = context.getVariable("target.received.end.timestamp");
-var apigeeStart = context.getVariable("client.received.start.timestamp")
-context.setVariable("dt.targetDuration", (end - start) + "");
-context.setVariable("dt.targetStart", start + "");
-const now  = Date.now();
-context.setVariable("dt.apigeeDuration", (now - apigeeStart) + "");
+// Determine if the trace is to be sampled
+var traceSampled = getSampled(w3cTraceFlag);
 
-var sampled = context.getVariable("dt.sampled");
-var sendNRTracePayload = sampled;
-var selfSampled = false;
+if (traceSampled) {
+    // Generate a spanID for apigee and target
+    var apigeeSpanId = generateValidId(16);
+    var targetSpanId = generateValidId(16);
 
-//Sample anyway if response is slow
-if (!sampled) {
-    if ((end - apigeeStart) > properties.autoSampleMillis) { //apigee flows > ##ms get sampled and traced
-        sendNRTracePayload = true;
-        selfSampled = true;
+    // Creates a W3C traceId if there is no traceparent
+    if (w3cTraceparent === null) {
+        w3cTraceId = generateValidId(32);
     }
+
+    // Set distributed trace specific context variables
+    context.setVariable("dt.trace.id", w3cTraceId); // the trace id, same for all spans
+    if (w3cParentId) {
+        context.setVariable("dt.parent.id.fragment", ",\"parent.id\": \"" + w3cParentId + "\"");
+        // context.setVariable("dt.parent.id.fragment", `,\"parent.id\": \"${w3cParentId}\"`);
+    } else {
+        context.setVariable("dt.parent.id.fragment", "");
+    }
+    context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
+    context.setVariable("dt.target.span.id", targetSpanId); // a span id to just cover the target request
+    context.setVariable("dt.sampled", traceSampled); // indicates that proxy is sampled
+
+    // TODO: Process any internal spans so they can be added to the trace payload
+
+    // Set the traceparent and tracestate for the backend service 
+    context.setVariable("request.header.traceparent", W3C_VER_NUM + "-" + w3cTraceId + "-" + targetSpanId + "-" + traceSampled ? W3C_TRACE_SAMPLED_FLAG : W3C_TRACE_NOT_SAMPLED_FLAG);
+    // Preserve tracestate
+    //context.setVariable("request.header.tracestate", "");
+
+    // Get timestamps from the apigee flow variables
+    var start = context.getVariable("target.sent.start.timestamp");
+    var end = context.getVariable("target.received.end.timestamp");
+    var apigeeStart = context.getVariable("client.received.start.timestamp");
+
+    // Set the target duration and approximate apigee duration (client.sent.end.timestamp is only known in the PostClientFlow)
+    context.setVariable("dt.target.duration", end - start);
+    context.setVariable("dt.apigee.approx.duration", Date.now() - apigeeStart);
 }
 
-//process the internal spans so they can be added to the trace payload
-var internalSpansString = "";
-context.setVariable("dt.sendNRTracePayload", sendNRTracePayload);
-context.setVariable("dt.selfSampled", selfSampled);
-context.setVariable("dt.internalSpans", internalSpansString);
-
-//Set target start timestamp in tracestate header
-var w3TraceState = context.getVariable("dt.w3TraceState");
-//print("w3 trace state in Prepare Before:"+w3TraceState);
-var targetTraceState = context.getVariable("dt.targetTraceState");
-if (targetTraceState !== null) {
-    var ns = w3TraceState.indexOf(targetTraceState);
-    var strs = w3TraceState.substr(0, ns);
-    w3TraceState = strs + start;
-}
-context.setVariable("request.header.tracestate", w3TraceState);
-//print("w3 trace state in Prepare After:"+w3TraceState);
+context.setVariable("dt.nr.latency", Date.now() - scriptStart);  // Record the time taken to run this script

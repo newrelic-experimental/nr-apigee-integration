@@ -7,8 +7,12 @@
           "name": "JS-NRTracePrepare.xml",
           "tokens": [
             {
-              "xpath": "/Javascript/Properties/Property[@name='autoSampleMillis']",
-              "value": 5000
+              "xpath": "/Javascript/Properties/Property[@name='tracesSampler']",
+              "value": "parentbased_always_on"
+            },
+            {
+              "xpath": "/Javascript/Properties/Property[@name='tracesSamplerArg']",
+              "value": 1.0
             }
           ]
         }

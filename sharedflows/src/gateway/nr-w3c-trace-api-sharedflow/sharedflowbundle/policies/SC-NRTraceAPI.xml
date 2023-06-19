@@ -22,6 +22,7 @@
                         "host": "{request.header.host}",
                         "is.error": "{is.error}",
                         "message.status.code": "{message.status.code}",
+                        "newrelic.latency.ms": "{dt.nr.latency}",
                         "organization.name": "{organization.name}",
                         "proxy.basepath": "{proxy.basepath}",
                         "proxy.client.ip": "{proxy.client.ip}",
@@ -30,37 +31,35 @@
                         "proxy.url": "{proxy.url}",
                         "request.verb": "{request.verb}",
                         "request.url": "{request.url}",
-                        "selfSampled": {dt.selfSampled},
                         "service.name": "{apiproxy.name}"
                       }
                     },
                     "spans": [
                       {
-                        "trace.id": "{dt.traceID}",
-                        "id": "{dt.apigeeSpanID}",
+                        "trace.id": "{dt.trace.id}",
+                        "id": "{dt.apigee.span.id}",
                         "attributes": {
-                          "duration.ms": {dt.apigeeDuration},
+                          "duration.ms": {dt.apigee.approx.duration},
                           "client.received.start.timestamp": {client.received.start.timestamp},
                           "client.sent.end.timestamp": {client.sent.end.timestamp},
-                          "name": "{apiproxy.name}",
-                          "parent.id": "{dt.incomingParentID}"
+                          "name": "{apiproxy.name}"
+                          {dt.parent.id.fragment}
                         },
-                        "timestamp": {dt.apigeeStartTime}
+                        "timestamp": {client.received.start.timestamp}
                       },
                       {
-                        "trace.id": "{dt.traceID}",
-                        "id": "{dt.targetSpanID}",
+                        "trace.id": "{dt.trace.id}",
+                        "id": "{dt.target.span.id}",
                         "attributes": {
-                          "duration.ms": {dt.targetDuration},
+                          "duration.ms": {dt.target.duration},
                           "target.sent.start.timestamp": {target.sent.start.timestamp},
                           "target.received.end.timestamp": {target.received.end.timestamp},
-                          "name": "{target.name}",
-                          "parent.id": "{dt.apigeeSpanID}",
+                          "name": "{target.url}",
+                          "parent.id": "{dt.apigee.span.id}",
                           "response.code": {message.status.code}
                         },
-                        "timestamp": {dt.targetStart}
+                        "timestamp": {target.sent.start.timestamp}
                       }
-                      {dt.internalSpans}
                     ]
                   }
                 ]
