@@ -1,4 +1,7 @@
 # terraform config 
+variable "new_relic_region" {
+  type = string
+}
 terraform {
   required_version = ">= 1.3.1"
   required_providers {
@@ -10,5 +13,5 @@ terraform {
 }
 
 provider "newrelic" {
-  region = "US" 
+  region = var.new_relic_region 
 }
