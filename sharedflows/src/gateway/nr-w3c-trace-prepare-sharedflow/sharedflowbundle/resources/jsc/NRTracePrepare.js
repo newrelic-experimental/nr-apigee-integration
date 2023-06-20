@@ -36,7 +36,7 @@ function generateValidId(len) {
 function isProbabalistic() {
     var isProbabalistic = false;
     if (properties.tracesSamplerArg) {
-        isProbabalistic = Number(properties.tracesSamplerArg) > Math.random();
+        isProbabalistic = Number(properties.tracesSamplerArg) >= Math.random();
     } else {
         print("Sampler traceidratio requires a tracesSamplerArg");
     }
@@ -115,18 +115,17 @@ if (w3cTraceparent) {
     } catch (e) {
         print("Something went wrong in decoding Trace Parent.", w3cTraceparent);
     }
-    print('W3C trace context included on inbound request');
+    print("W3C trace context included on inbound request");
 } else {
-    print('W3C trace context not included on inbound request');
+    print("W3C trace context not included on inbound request");
 }
 
 // Determine if the trace is to be sampled
 var traceSampled = getSampled(w3cTraceFlag);
 
 if (traceSampled) {
-    // Generate a spanID for apigee and target
+    // Generate a spanID for apigee for the proxy
     var apigeeSpanId = generateValidId(16);
-    var targetSpanId = generateValidId(16);
 
     // Creates a W3C traceId if there is no traceparent
     if (w3cTraceparent === null) {
@@ -137,9 +136,38 @@ if (traceSampled) {
     context.setVariable("dt.trace.id", w3cTraceId); // the trace id, same for all spans
     if (w3cParentId) {
         context.setVariable("dt.parent.id.fragment", ",\"parent.id\": \"" + w3cParentId + "\"");
-        // context.setVariable("dt.parent.id.fragment", `,\"parent.id\": \"${w3cParentId}\"`);
+        // context.setVariable("dt.parent.id.fragment", `,\"parent.id\": \"${w3cParentId}\"`);  // Template literals require Rhino Javascript 1.7.14
     } else {
         context.setVariable("dt.parent.id.fragment", "");
+    }
+
+    // Get timestamps from the apigee flow variables
+    var targetStart = context.getVariable("target.sent.start.timestamp");
+    var targetEnd = context.getVariable("target.received.end.timestamp");
+    var apigeeStart = context.getVariable("client.received.start.timestamp");
+
+    if (targetStart) {  // The backend target was called
+        // Generate a spanID for apigee for the target
+        var targetSpanId = generateValidId(16);
+        context.setVariable("dt.target.span.fragment",
+            ', ' +
+            '{ ' +
+                '"trace.id": \"' + w3cTraceId + '\", ' +
+                '"id": \"' + targetSpanId + '\", ' +
+                '"attributes": { ' +
+                '    "duration.ms": ' + (targetEnd - targetStart) + ', ' +
+                '    "target.sent.start.timestamp": ' + targetStart + ', ' +
+                '    "target.received.end.timestamp": ' + targetEnd + ', ' +
+                '    "name": \"' + context.getVariable("target.url") + '\", ' +
+                '    "parent.id": \"' + apigeeSpanId + '\", ' +
+                '    "response.code": ' + context.getVariable("message.status.code") +
+                '}, ' +
+                '"timestamp": ' + targetStart +
+            '}'
+        );
+    } else {  // The backend target was not called
+        print("A target was not called, e.g. due to a cache hit");
+        context.setVariable("dt.target.span.fragment", "");
     }
     context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
     context.setVariable("dt.target.span.id", targetSpanId); // a span id to just cover the target request
@@ -152,13 +180,8 @@ if (traceSampled) {
     // Preserve tracestate
     //context.setVariable("request.header.tracestate", "");
 
-    // Get timestamps from the apigee flow variables
-    var start = context.getVariable("target.sent.start.timestamp");
-    var end = context.getVariable("target.received.end.timestamp");
-    var apigeeStart = context.getVariable("client.received.start.timestamp");
-
     // Set the target duration and approximate apigee duration (client.sent.end.timestamp is only known in the PostClientFlow)
-    context.setVariable("dt.target.duration", end - start);
+    context.setVariable("dt.target.duration", targetEnd - targetStart);
     context.setVariable("dt.apigee.approx.duration", Date.now() - apigeeStart);
 }
 

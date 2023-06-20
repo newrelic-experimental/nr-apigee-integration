@@ -42,24 +42,12 @@
                           "duration.ms": {dt.apigee.approx.duration},
                           "client.received.start.timestamp": {client.received.start.timestamp},
                           "client.sent.end.timestamp": {client.sent.end.timestamp},
-                          "name": "{apiproxy.name}"
+                          "name": "{apiproxy.name} - {environment.name}"
                           {dt.parent.id.fragment}
                         },
                         "timestamp": {client.received.start.timestamp}
-                      },
-                      {
-                        "trace.id": "{dt.trace.id}",
-                        "id": "{dt.target.span.id}",
-                        "attributes": {
-                          "duration.ms": {dt.target.duration},
-                          "target.sent.start.timestamp": {target.sent.start.timestamp},
-                          "target.received.end.timestamp": {target.received.end.timestamp},
-                          "name": "{target.url}",
-                          "parent.id": "{dt.apigee.span.id}",
-                          "response.code": {message.status.code}
-                        },
-                        "timestamp": {target.sent.start.timestamp}
                       }
+                      {dt.target.span.fragment}
                     ]
                   }
                 ]
