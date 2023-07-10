@@ -30,7 +30,7 @@
                         "proxy.pathsuffix": "{proxy.pathsuffix}",
                         "proxy.url": "{proxy.url}",
                         "request.verb": "{request.verb}",
-                        "request.url": "{request.url}",
+                        "request.url": "{dt.request.url}",
                         "service.name": "{apiproxy.name}"
                       }
                     },

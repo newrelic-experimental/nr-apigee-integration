@@ -58,7 +58,7 @@ function getSampled(traceFlag) {
 
     if (tracesSampler === SAMPLER_ALWAYS_ON) {
         isSampled = true;
-    } else if (tracesSampler === SAMPLER_ALWAYS_OFF) {
+    } else if (tracesSampler === SAMPER_ALWAYS_OFF) {
         isSampled = false;
     } else if (tracesSampler === SAMPLER_TRACE_ID_RATIO) {
         isSampled = isProbabalistic(isSampled);
@@ -149,6 +149,7 @@ if (traceSampled) {
     if (targetStart) {  // The backend target was called
         // Generate a spanID for apigee for the target
         var targetSpanId = generateValidId(16);
+        context.setVariable("dt.request.url", context.getVariable("request.url"));
         context.setVariable("dt.target.span.fragment",
             ', ' +
             '{ ' +
@@ -167,6 +168,7 @@ if (traceSampled) {
         );
     } else {  // The backend target was not called
         print("A target was not called, e.g. due to a cache hit");
+        context.setVariable("dt.request.url", "");
         context.setVariable("dt.target.span.fragment", "");
     }
     context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
