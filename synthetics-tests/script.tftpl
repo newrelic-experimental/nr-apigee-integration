@@ -22,7 +22,7 @@ function generateValidId(len) {
 const traceId = generateValidId(32);
 const spanId = generateValidId(16);
 let traceparent = "00-" + traceId + "-" + spanId + "-01";
-console.log(traceparent);
+console.log("traceparent", traceparent);
 
 // Call Trace API
 const region = "${REGION}";
@@ -32,11 +32,20 @@ if (region === "US") {
 } else {
   traceApiEndpoint = "https://trace-api.eu.newrelic.com/trace/v1";
 }
-const traceApiResponse = await got.post(traceApiEndpoint, )
 
-const {data} = await got.post(traceApiEndpoint, {
+const traceApiOptions = {
+  headers: {
+    'API-key': $secure.TRACE_INSERT_LICENSE_API_KEY,
+    'Content-Type': 'application/json'
+  },
 	json: [
           {
+            "common": {
+              "attributes": {
+                "entity.name": "${ENDPOINT}",
+                "service.name": "${ENDPOINT}"
+              }
+            },
             "spans": [
               {
                 "trace.id": traceId,
@@ -50,16 +59,19 @@ const {data} = await got.post(traceApiEndpoint, {
             ]
           }
         ]
-}).json();
+};
+
+const traceApiResponse = await got.post(traceApiEndpoint, traceApiOptions).json();
+console.log("traceApiResponse", traceApiResponse);
 
 // Call Apigee
-const options = {
+const apigeeOptions = {
   headers: {
     "traceparent": traceparent,
     "tracestate": ""
   }
 };
-const apigeeResponse = await got.get('${APIGEE_PROTOCOL}://${APIGEE_HOST}${ENDPOINT}', options)
+const apigeeResponse = await got.get('${APIGEE_PROTOCOL}://${APIGEE_HOST}${ENDPOINT}', apigeeOptions)
 
 let jsonBody = JSON.parse(apigeeResponse.body);
 console.log('Response:', jsonBody);
