@@ -26,8 +26,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.newrelic.apigee</groupId>
-    <artifactId>nr-w3c-trace-prepare-sharedflow</artifactId>
+    <artifactId>nr-instrumentation-sharedflow</artifactId>
     <version>1.0</version>
-    <name>nr-w3c-trace-prepare-sharedflow</name>
+    <name>nr-instrumentation-sharedflow</name>
     <packaging>pom</packaging>
 </project>

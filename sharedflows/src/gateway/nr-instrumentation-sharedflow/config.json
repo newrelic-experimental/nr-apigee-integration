@@ -4,7 +4,7 @@
       "name": "test",
       "policies": [
         {
-          "name": "JS-NRTracePrepare.xml",
+          "name": "JS-NRInstrumentation.xml",
           "tokens": [
             {
               "xpath": "/Javascript/Properties/Property[@name='tracesSampler']",

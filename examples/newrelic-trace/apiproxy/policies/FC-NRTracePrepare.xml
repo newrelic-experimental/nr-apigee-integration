@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<FlowCallout continueOnError="true" enabled="true" name="FC-NRTracePrepare">
-  <DisplayName>FC-NRTracePrepare</DisplayName>
-  <Parameters/>
-  <SharedFlowBundle>nr-w3c-trace-prepare-sharedflow</SharedFlowBundle>
-</FlowCallout>

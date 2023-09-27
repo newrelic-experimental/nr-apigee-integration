@@ -58,7 +58,7 @@ function getSampled(traceFlag) {
 
     if (tracesSampler === SAMPLER_ALWAYS_ON) {
         isSampled = true;
-    } else if (tracesSampler === SAMPER_ALWAYS_OFF) {
+    } else if (tracesSampler === SAMPLER_ALWAYS_OFF) {
         isSampled = false;
     } else if (tracesSampler === SAMPLER_TRACE_ID_RATIO) {
         isSampled = isProbabalistic(isSampled);

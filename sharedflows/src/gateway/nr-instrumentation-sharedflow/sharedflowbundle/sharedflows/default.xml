@@ -1,5 +1,5 @@
 <SharedFlow name="default">
     <Step>
-        <Name>JS-NRTracePrepare</Name>
+        <Name>JS-NRInstrumentation</Name>
     </Step>
 </SharedFlow>

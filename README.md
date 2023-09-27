@@ -20,9 +20,9 @@ Create, or update a propertyset named `NewRelicPropSet` for your environment usi
 ### Maven configuration
 If you are using the New Relic EU region, instead of the US region, change the host endpoint values.
 * For logging edit the [config.json](sharedflows/src/gateway/nr-logging-sharedflow/config.json) file. Use either `newrelic.syslog.nr-data.net` or `newrelic.syslog.eu.nr-data.net` depending on whether your New Relic account is hosted in the US or EU region respectively  
-* For tracing edit the [config.json](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow/config.json) file. Use either `trace-api.newrelic.com` or `trace-api.eu.newrelic.com` depending on whether your New Relic account is hosted in the US or EU region respectively
+* For tracing edit the [config.json](sharedflows/src/gateway/nr-trace-api-sharedflow/config.json) file. Use either `trace-api.newrelic.com` or `trace-api.eu.newrelic.com` depending on whether your New Relic account is hosted in the US or EU region respectively
 
-To configure the slow requests auto sample time edit the [config.json](sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow/config.json) file. This is the time, in milliseconds, that will initiate auto-sampling of slow proxy requests. Suggested `5000`ms (5 seconds)
+To configure the slow requests auto sample time edit the [config.json](sharedflows/src/gateway/nr-instrumentation-sharedflow/config.json) file. This is the time, in milliseconds, that will initiate auto-sampling of slow proxy requests. Suggested `5000`ms (5 seconds)
 
 ### Environment variables
 Set the following environment variables:
@@ -38,12 +38,12 @@ The instrumentation examples in this repository make use of [shared flows](https
 
 Example API proxies are contained in the [examples](examples) directory. The example proxies are dependent on the following shared flows:
 * nr-logging-sharedflow
-* nr-w3c-trace-api-sharedflow
-* nr-w3c-trace-prepare-sharedflow
+* nr-trace-api-sharedflow
+* nr-instrumentation-sharedflow
 
 To install the shared flows:
-1. Execute the [deploy.sh](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-w3c-trace-api-sharedflow](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow) directory.
-2. Execute the [deploy.sh](sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-w3c-trace-prepare-sharedflow](sharedflows/src/gateway/nr-w3c-trace-api-sharedflow) directory.
+1. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
+2. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
 3. Execute the [deploy.sh](sharedflows/src/gateway/nr-logging-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-logging-sharedflow](sharedflows/src/gateway/nr-logging-sharedflow) directory.
 
 ### Example flow

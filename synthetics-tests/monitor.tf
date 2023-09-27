@@ -6,13 +6,13 @@ variable "apigee_protocol" {
   type = string
 }
 
-variable "trace_insert_license_api_key" {
+variable "apigee_test_insert_license_api_key" {
   type = string
 }
 
-resource "newrelic_synthetics_secure_credential" "trace_insert_license_api_key" {
-  key = "TRACE_INSERT_LICENSE_API_KEY"
-  value = var.trace_insert_license_api_key
+resource "newrelic_synthetics_secure_credential" "apigee_test_insert_license_api_key" {
+  key = "APIGEE_TEST_INSERT_LICENSE_API_KEY"
+  value = var.apigee_test_insert_license_api_key
   description = "NR trace api insert license key"
 }
 

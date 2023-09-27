@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<SharedFlowBundle revision="1" name="nr-w3c-trace-api-sharedflow">
-  <DisplayName>nr-w3c-trace-api-sharedflow</DisplayName>
+<SharedFlowBundle revision="1" name="nr-trace-api-sharedflow">
+  <DisplayName>nr-trace-api-sharedflow</DisplayName>
   <Description>Shared flow to call New Relic Trace API distributed tracing</Description>  
   <Policies>
     <Policy>SC-NRTraceAPI</Policy>

@@ -9,7 +9,7 @@
     <Request/>
     <Response>
       <Step>
-        <Name>FC-NRTracePrepare</Name>
+        <Name>FC-NRInstrumentation</Name>
       </Step>
     </Response>
   </PostFlow>
