@@ -1,5 +1,6 @@
+[![New Relic Experimental header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#new-relic-experimental)
 # nr-apigee-integration
-This repository contains reusable configuration to provide observability of [Apigee](https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee) proxies through New Relic, using [W3C Trace Context](https://www.w3.org/TR/trace-context/) distributed tracing and logs in context.
+This repository contains reusable configuration to provide observability of [Apigee](https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee) proxies through New Relic, using [W3C Trace Context](https://www.w3.org/TR/trace-context/) distributed tracing, metrics, and logs in context.
 
 ## Overview
 TBC
@@ -57,3 +58,22 @@ Terraform configuration is available to create synthetics monitors to exercise t
 
 ## Acknowledgements
 The distributed tracing instrumentation code here owes much to the https://github.com/sri-shetty/DT-Apigee-Proxy repository.
+
+# Support
+
+New Relic has open-sourced this project. This project is provided AS-IS WITHOUT WARRANTY OR DEDICATED SUPPORT. Issues and contributions should be reported to the project here on GitHub.
+
+We encourage you to bring your experiences and questions to the [Explorers Hub](https://discuss.newrelic.com) where our community members collaborate on solutions and new ideas.
+
+## Issues / enhancement requests
+
+Issues and enhancement requests can be submitted in the [Issues tab of this repository](../../issues). Please search for and review the existing open issues before submitting a new issue.
+
+# Contributing
+
+Contributions are encouraged! If you submit an enhancement request, we'll invite you to contribute the change yourself. Please review our [Contributors Guide](CONTRIBUTING.md).
+
+Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant.
+
+# Open source license
+This project is distributed under the [Apache 2 license](LICENSE).
