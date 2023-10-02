@@ -42,7 +42,8 @@
                           "duration.ms": {dt.apigee.approx.duration},
                           "client.received.start.timestamp": {client.received.start.timestamp},
                           "client.sent.end.timestamp": {client.sent.end.timestamp},
-                          "name": "{apiproxy.name} - {environment.name}"
+                          "name": "{apiproxy.name} - {environment.name}",
+                          "span.kind": "server"
                           {dt.parent.id.fragment}
                         },
                         "timestamp": {client.received.start.timestamp}
