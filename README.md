@@ -2,9 +2,6 @@
 # nr-apigee-integration
 This repository contains reusable configuration to provide observability of [Apigee](https://cloud.google.com/apigee/docs/api-platform/get-started/what-apigee) proxies through New Relic, using [W3C Trace Context](https://www.w3.org/TR/trace-context/) distributed tracing, metrics, and logs in context.
 
-## Overview
-TBC
-
 ## Installation
 Assumes an Apigee-X environment, but there is no reason this shouldn't work with Apigee Edge, aside from credentials.
 ### Prerequisites
@@ -38,20 +35,27 @@ If the environment variables are not set, they can alternatively be provided in 
 The instrumentation examples in this repository make use of [shared flows](https://cloud.google.com/apigee/docs/api-platform/fundamentals/shared-flows).
 
 Example API proxies are contained in the [examples](examples) directory. The example proxies are dependent on the following shared flows:
-* nr-logging-sharedflow
-* nr-trace-api-sharedflow
 * nr-instrumentation-sharedflow
+* nr-log-api-sharedflow
+* nr-logging-sharedflow
+* nr-metric-api-sharedflow
+* nr-trace-api-sharedflow
 
 To install the shared flows:
-1. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
-2. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
+1. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
+2. Execute the [deploy.sh](sharedflows/src/gateway/nr-log-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-log-api-sharedflow](sharedflows/src/gateway/nr-log-api-sharedflow) directory.
 3. Execute the [deploy.sh](sharedflows/src/gateway/nr-logging-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-logging-sharedflow](sharedflows/src/gateway/nr-logging-sharedflow) directory.
+4. Execute the [deploy.sh](sharedflows/src/gateway/nr-metric-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-metric-api-sharedflow](sharedflows/src/gateway/nr-metric-api-sharedflow) directory.
+5. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
 
 ### Example flow
 To install the example flows:
-1. Execute the [deploy.sh](examples/newrelic-logging/deploy.sh) script from within the [examples/newrelic-logging](examples/newrelic-logging) directory.
-2. Execute the [deploy.sh](examples/newrelic-trace/deploy.sh) script from within the [examples/newrelic-trace](examples/newrelic-trace) directory.
-3. Execute the [deploy.sh](examples/newrelic-trace-and-logging/deploy.sh) script from within the [examples/newrelic-trace-and-logging](examples/newrelic-trace-and-logging) directory.
+1. Execute the [deploy.sh](examples/newrelic-log/deploy.sh) script from within the [examples/newrelic-log](examples/newrelic-log) directory.
+2. Execute the [deploy.sh](examples/newrelic-logging/deploy.sh) script from within the [examples/newrelic-logging](examples/newrelic-logging) directory.
+3. Execute the [deploy.sh](examples/newrelic-metric/deploy.sh) script from within the [examples/newrelic-metric](examples/newrelic-metric) directory.
+4. Execute the [deploy.sh](examples/newrelic-trace/deploy.sh) script from within the [examples/newrelic-trace](examples/newrelic-trace) directory.
+5. Execute the [deploy.sh](examples/newrelic-trace-and-logging/deploy.sh) script from within the [examples/newrelic-trace-and-logging](examples/newrelic-trace-and-logging) directory.
+6. Execute the [deploy.sh](examples/newrelic-trace-and-metric-and-log/deploy.sh) script from within the [examples/newrelic-trace-and-metric-and-log](examples/newrelic-trace-and-metric-and-log) directory.
 
 ## Synthetics tests for the example API proxies
 Terraform configuration is available to create synthetics monitors to exercise the sample API proxies. Take a look at the [README.md](synthetics-tests/README.md) file in the [synthetics-tests](synthetics-tests) directory for more information.
