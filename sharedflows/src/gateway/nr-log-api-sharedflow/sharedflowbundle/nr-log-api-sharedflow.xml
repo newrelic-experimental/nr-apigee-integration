@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SharedFlowBundle revision="1" name="nr-log-api-sharedflow">
+  <DisplayName>nr-log-api-sharedflow</DisplayName>
+  <Description>Shared flow to call the New Relic Log API</Description>  
+  <Policies>
+    <Policy>SC-NRLogAPI</Policy>
+  </Policies>
+  <SharedFlows>
+    <SharedFlow>default</SharedFlow>
+  </SharedFlows>
+</SharedFlowBundle>

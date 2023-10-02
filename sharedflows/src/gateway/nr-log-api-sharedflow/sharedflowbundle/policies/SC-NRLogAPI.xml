@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ServiceCallout async="true" continueOnError="true" enabled="true" name="SC-NRLogAPI">
+    <DisplayName>SC-NRLogAPI</DisplayName>
+    <Properties/>
+    <Request clearPayload="true">
+        <Set>
+            <Headers>
+                <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
+            </Headers>
+            <Verb>POST</Verb>
+            <Payload contentType="application/json">
+                [
+                  {
+                    "common": {
+                      "attributes": {
+                        "apiproxy.name": "{apiproxy.name}",
+                        "environment.name": "{environment.name}",
+                        "organization.name": "{organization.name}",
+                        "proxy.client.ip": "{proxy.client.ip}",
+                        "target.ip": "{target.ip}"
+                      }
+                    },
+                    "logs": [{
+                      "client.received.start.time": "{client.received.start.time}",
+                      "client.received.start.timestamp": "{client.received.start.timestamp}",
+                      "client.sent.end.time": "{client.sent.end.time}",
+                      "client.sent.end.timestamp": "{client.sent.end.timestamp}",
+                      "error.content": "{firstnonnull(escapeJSON(error.content),'')}",
+                      <!-- https://www.googlecloudcommunity.com/gc/Apigee/Message-Template-errors-on-unresolved-variable/m-p/467351 -->
+                      "error.status.code": {firstnonnull(error.status.code,'0')},
+                      "is.error": "{is.error}",
+                      "messageid": "{messageid}",
+                      "message.status.code": {message.status.code},
+                      "newrelic.latency.ms": {firstnonnull(dt.nr.latency,'0')},
+                      "request.verb": "{request.verb}",
+                      "request.uri": "{escapeJSON(request.uri)}",
+                      "request.url": "{escapeJSON(request.url)}",
+                      "response.content": "{escapeJSON(response.content)}",
+                      "response.status.code": "{response.status.code}",
+                      "service.name": "{apiproxy.name}",
+                      "target.sent.start.timestamp": "{target.sent.start.timestamp}",
+                      "target.received.end.timestamp": "{target.received.end.timestamp}",
+                      "trace.id": "{firstnonnull(dt.trace.id,'')}"
+                    }]
+                  }
+                ]
+            </Payload>
+        </Set>
+        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+    </Request>
+    <HTTPTargetConnection>
+        <Properties/>
+        <URL>replaced_by_config_json</URL>
+    </HTTPTargetConnection>
+</ServiceCallout>

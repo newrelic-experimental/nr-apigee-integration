@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "test",
+      "policies": [
+        {
+          "name": "SC-NRLogAPI.xml",
+          "tokens": [
+            {
+              "xpath": "/ServiceCallout/HTTPTargetConnection/URL",
+              "value": "https://log-api.newrelic.com/log/v1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
