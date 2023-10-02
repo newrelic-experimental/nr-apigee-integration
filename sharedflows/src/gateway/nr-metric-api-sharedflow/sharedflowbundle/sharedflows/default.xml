@@ -1,0 +1,6 @@
+<SharedFlow name="default">
+    <Step>
+        <Name>SC-NRMetricAPI</Name>
+        <Condition>(dt.sampled = true)</Condition>
+    </Step>
+</SharedFlow>

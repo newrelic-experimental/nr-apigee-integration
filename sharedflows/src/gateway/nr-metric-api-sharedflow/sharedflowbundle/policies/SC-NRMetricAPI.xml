@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ServiceCallout async="true" continueOnError="true" enabled="true" name="SC-NRMetricAPI">
+    <DisplayName>SC-NRMetricAPI</DisplayName>
+    <Properties/>
+    <Request clearPayload="true">
+        <Set>
+            <Headers>
+                <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
+            </Headers>
+            <Verb>POST</Verb>
+            <Payload contentType="application/json">
+                [
+                  {
+                    "metrics": [
+                      {
+                        "name": "http.server.duration",
+                        "type": "gauge",
+                        "value": {dt.apigee.approx.duration},
+                        "timestamp" : {client.received.start.timestamp},
+                        "attributes": {
+                          "apiproxy.name": "{apiproxy.name}",
+                          "apiproxy.revision": {apiproxy.revision},
+                          "entity.name": "{apiproxy.name}",
+                          "environment.name": "{environment.name}",
+                          "host": "{request.header.host}",
+                          "message.status.code": {message.status.code},
+                          "organization.name": "{organization.name}",
+                          "service.name": "{apiproxy.name}"
+                        }
+                      }
+                      {apigee.target.metric.fragment}
+                    ]
+                  }
+                ]
+            </Payload>
+        </Set>
+        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+    </Request>
+    <HTTPTargetConnection>
+        <Properties/>
+        <URL>replaced_by_config_json</URL>
+    </HTTPTargetConnection>
+</ServiceCallout>

@@ -122,10 +122,12 @@ if (w3cTraceparent) {
 
 // Determine if the trace is to be sampled
 var traceSampled = getSampled(w3cTraceFlag);
+context.setVariable("dt.sampled", traceSampled); // indicates that proxy is sampled
 
 if (traceSampled) {
     // Generate a spanID for apigee for the proxy
     var apigeeSpanId = generateValidId(16);
+    context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
 
     // Creates a W3C traceId if there is no traceparent
     if (w3cTraceparent === null) {
@@ -147,8 +149,9 @@ if (traceSampled) {
     var apigeeStart = context.getVariable("client.received.start.timestamp");
 
     if (targetStart) {  // The backend target was called
-        // Generate a spanID for apigee for the target
+        // Generate a spanID for the apigee target
         var targetSpanId = generateValidId(16);
+        context.setVariable("dt.target.span.id", targetSpanId); // a span id to just cover the target request
         context.setVariable("dt.request.url", context.getVariable("request.url"));
         context.setVariable("dt.target.span.fragment",
             ', ' +
@@ -165,17 +168,33 @@ if (traceSampled) {
                 '}, ' +
                 '"timestamp": ' + targetStart +
             '}'
+        );  // TODO: Process any internal spans so they can be added to the trace payload
+        // Generate a metric for the apigee target
+        context.setVariable("apigee.target.metric.fragment",
+            ', ' +
+            '{ ' +
+                '"name": "apigee.target.duration.ms", ' +
+                '"type": "gauge", ' +
+                '"value": ' + (targetEnd - targetStart) + ', ' +
+                '"timestamp": ' + apigeeStart + ', ' +
+                '"attributes": { ' +
+                '  "apiproxy.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
+                '  "apiproxy.revision": ' + context.getVariable("apiproxy.revision") + ', ' +
+                '  "entity.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
+                '  "environment.name": \"' + context.getVariable("environment.name") + '\", ' +
+                '  "host": \"' + context.getVariable("request.header.host") + '\", ' +
+                '  "message.status.code": ' + context.getVariable("message.status.code") + ', ' +
+                '  "organization.name": \"' + context.getVariable("organization.name") + '\", ' +
+                '  "service.name": \"' + context.getVariable("apiproxy.name") + '\"' +
+                '}' +
+            '} '
         );
     } else {  // The backend target was not called
         print("A target was not called, e.g. due to a cache hit");
         context.setVariable("dt.request.url", "");
         context.setVariable("dt.target.span.fragment", "");
+        context.setVariable("apigee.target.metric.fragment", "");
     }
-    context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
-    context.setVariable("dt.target.span.id", targetSpanId); // a span id to just cover the target request
-    context.setVariable("dt.sampled", traceSampled); // indicates that proxy is sampled
-
-    // TODO: Process any internal spans so they can be added to the trace payload
 
     // Set the traceparent and tracestate for the backend service 
     context.setVariable("request.header.traceparent", W3C_VER_NUM + "-" + w3cTraceId + "-" + targetSpanId + "-" + traceSampled ? W3C_TRACE_SAMPLED_FLAG : W3C_TRACE_NOT_SAMPLED_FLAG);

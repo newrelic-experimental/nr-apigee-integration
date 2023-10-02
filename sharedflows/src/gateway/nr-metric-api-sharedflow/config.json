@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "test",
+      "policies": [
+        {
+          "name": "SC-NRMetricAPI.xml",
+          "tokens": [
+            {
+              "xpath": "/ServiceCallout/HTTPTargetConnection/URL",
+              "value": "https://metric-api.newrelic.com/metric/v1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

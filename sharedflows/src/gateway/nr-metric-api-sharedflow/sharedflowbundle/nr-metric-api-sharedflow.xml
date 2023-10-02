@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SharedFlowBundle revision="1" name="nr-metric-api-sharedflow">
+  <DisplayName>nr-metric-api-sharedflow</DisplayName>
+  <Description>Shared flow to call the New Relic Metric API</Description>  
+  <Policies>
+    <Policy>SC-NRMetricAPI</Policy>
+  </Policies>
+  <SharedFlows>
+    <SharedFlow>default</SharedFlow>
+  </SharedFlows>
+</SharedFlowBundle>
