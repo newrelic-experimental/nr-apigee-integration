@@ -16,13 +16,13 @@ resource "newrelic_synthetics_secure_credential" "apigee_test_insert_license_api
   description = "NR trace api insert license key"
 }
 
-resource "newrelic_synthetics_script_monitor" "newrelic_trace_monitor" {
-  name                 = "newrelic-trace"
+resource "newrelic_synthetics_script_monitor" "newrelic_log_monitor" {
+  name                 = "newrelic-log"
   type                 = "SCRIPT_API"
   locations_public     = ["EU_WEST_2"]
   period               = "EVERY_15_MINUTES"
   status               = "ENABLED"
-  script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/trace", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
+  script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/log", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
   script_language      = "JAVASCRIPT"
   runtime_type         = "NODE_API"
   runtime_type_version = "16.10"
@@ -39,6 +39,54 @@ resource "newrelic_synthetics_script_monitor" "newrelic_logging_monitor" {
   period               = "EVERY_15_MINUTES"
   status               = "ENABLED"
   script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/logging", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
+  script_language      = "JAVASCRIPT"
+  runtime_type         = "NODE_API"
+  runtime_type_version = "16.10"
+  tag {
+    key = "terraform"
+    values = [true]
+  }
+}
+
+resource "newrelic_synthetics_script_monitor" "newrelic_metric_monitor" {
+  name                 = "newrelic-metric"
+  type                 = "SCRIPT_API"
+  locations_public     = ["EU_WEST_2"]
+  period               = "EVERY_15_MINUTES"
+  status               = "ENABLED"
+  script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/metric", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
+  script_language      = "JAVASCRIPT"
+  runtime_type         = "NODE_API"
+  runtime_type_version = "16.10"
+  tag {
+    key = "terraform"
+    values = [true]
+  }
+}
+
+resource "newrelic_synthetics_script_monitor" "newrelic_trace_monitor" {
+  name                 = "newrelic-trace"
+  type                 = "SCRIPT_API"
+  locations_public     = ["EU_WEST_2"]
+  period               = "EVERY_15_MINUTES"
+  status               = "ENABLED"
+  script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/trace", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
+  script_language      = "JAVASCRIPT"
+  runtime_type         = "NODE_API"
+  runtime_type_version = "16.10"
+  tag {
+    key = "terraform"
+    values = [true]
+  }
+}
+
+resource "newrelic_synthetics_script_monitor" "newrelic_trace_and_metric_and_log_monitor" {
+  name                 = "newrelic-trace-and-metric-and-log"
+  type                 = "SCRIPT_API"
+  locations_public     = ["EU_WEST_2"]
+  period               = "EVERY_15_MINUTES"
+  status               = "ENABLED"
+  script               = templatefile("./script.tftpl", { ENDPOINT = "/newrelic/trace-and-metric-and-log", APIGEE_PROTOCOL = var.apigee_protocol, APIGEE_HOST = var.apigee_host, REGION = var.new_relic_region })
   script_language      = "JAVASCRIPT"
   runtime_type         = "NODE_API"
   runtime_type_version = "16.10"
