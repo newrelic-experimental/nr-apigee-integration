@@ -13,7 +13,9 @@ Update the [newrelic.properties.sample](newrelic.properties.sample) properties f
 The newrelic.properties file contains the following value:
 * LICENSE_KEY: your New Relic [Ingest License API key](https://docs.newrelic.com/docs/apis/intro-apis/new-relic-api-keys/#license-key)
 
-Create, or update a propertyset named `NewRelicPropSet` for your environment using [props-create.sh](props-create.sh), and [props-update.sh](props-update.sh) respectively. Use [props-get.sh](props-get.sh) to verify the property set has been created successfully. Use [props-delete.sh](props-delete.sh) to delete the property set.
+Create, or update a property set named `NewRelicPropSet` for your environment using [props.sh](props.sh) -c or -u for create, and update respectively. Use [props.sh](props.sh) -r to verify the property set has been created successfully. Use [props.sh](props.sh) -d to delete the property set.
+
+Note that in production environments you may wish to use Apigee [secrets](https://cloud.google.com/apigee/docs/api-platform/publish/import-existing-consumer-keys-and-secrets) rather than [property sets](https://cloud.google.com/apigee/docs/api-platform/cache/property-sets).
 
 ### Maven configuration
 If you are using the New Relic EU region, instead of the US region, change the host endpoint values.
@@ -28,7 +30,7 @@ Set the following environment variables:
 * APIGEE_ENV: your agigee environment. The proxies can be configured per environment, e.g. `dev`
 
 If the environment variables are not set, they can alternatively be provided in the following file locations:
-* [props-create.sh](props-create.sh), [props-update.sh](props-update.sh), and [props-get.sh](props-get.sh)
+* [props.sh](props.sh)
 * deploy.sh for each of the proxies 
 
 ### Shared flows
@@ -36,17 +38,19 @@ The instrumentation examples in this repository make use of [shared flows](https
 
 Example API proxies are contained in the [examples](examples) directory. The example proxies are dependent on the following shared flows:
 * nr-instrumentation-sharedflow
+* nr-instrumentation-obfuscation-sharedflow
 * nr-log-api-sharedflow
 * nr-logging-sharedflow
 * nr-metric-api-sharedflow
 * nr-trace-api-sharedflow
 
 To install the shared flows:
-1. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
-2. Execute the [deploy.sh](sharedflows/src/gateway/nr-log-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-log-api-sharedflow](sharedflows/src/gateway/nr-log-api-sharedflow) directory.
-3. Execute the [deploy.sh](sharedflows/src/gateway/nr-logging-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-logging-sharedflow](sharedflows/src/gateway/nr-logging-sharedflow) directory.
-4. Execute the [deploy.sh](sharedflows/src/gateway/nr-metric-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-metric-api-sharedflow](sharedflows/src/gateway/nr-metric-api-sharedflow) directory.
-5. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
+1. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow](sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow) directory.
+2. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
+3. Execute the [deploy.sh](sharedflows/src/gateway/nr-log-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-log-api-sharedflow](sharedflows/src/gateway/nr-log-api-sharedflow) directory.
+4. Execute the [deploy.sh](sharedflows/src/gateway/nr-logging-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-logging-sharedflow](sharedflows/src/gateway/nr-logging-sharedflow) directory.
+5. Execute the [deploy.sh](sharedflows/src/gateway/nr-metric-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-metric-api-sharedflow](sharedflows/src/gateway/nr-metric-api-sharedflow) directory.
+6. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
 
 ### Example flow
 To install the example flows:
@@ -56,6 +60,7 @@ To install the example flows:
 4. Execute the [deploy.sh](examples/newrelic-trace/deploy.sh) script from within the [examples/newrelic-trace](examples/newrelic-trace) directory.
 5. Execute the [deploy.sh](examples/newrelic-trace-and-logging/deploy.sh) script from within the [examples/newrelic-trace-and-logging](examples/newrelic-trace-and-logging) directory.
 6. Execute the [deploy.sh](examples/newrelic-trace-and-metric-and-log/deploy.sh) script from within the [examples/newrelic-trace-and-metric-and-log](examples/newrelic-trace-and-metric-and-log) directory.
+7. Execute the [deploy.sh](examples/newrelic-trace-and-metric-and-log-obfuscate/deploy.sh) script from within the [examples/newrelic-trace-and-metric-and-log-obfuscate](examples/newrelic-trace-and-metric-and-log-obfuscate) directory.
 
 ## Synthetics tests for the example API proxies
 Terraform configuration is available to create synthetics monitors to exercise the sample API proxies. Take a look at the [README.md](synthetics-tests/README.md) file in the [synthetics-tests](synthetics-tests) directory for more information.
