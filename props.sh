@@ -49,7 +49,7 @@ delete() {
 }
 
 # Parse command-line arguments
-while getopts "c:g:u:d:" opt; do
+while getopts "c r u d" opt; do
   case ${opt} in
     c )
       create
@@ -64,7 +64,7 @@ while getopts "c:g:u:d:" opt; do
       delete
       ;;
     \? )
-      echo "Usage: cmd [-c] [-r] [-u] [-d]"
+      echo "Usage: ./props.sh [-c] [-r] [-u] [-d]"
       ;;
   esac
 done
