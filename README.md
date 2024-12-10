@@ -33,6 +33,9 @@ If the environment variables are not set, they can alternatively be provided in 
 * [props.sh](props.sh)
 * deploy.sh for each of the proxies 
 
+### Deploying the properties file, shared flows and example proxies in a single script
+With the environment variables set, run [deploy.sh](deploy.sh).
+
 ### Shared flows
 The instrumentation examples in this repository make use of [shared flows](https://cloud.google.com/apigee/docs/api-platform/fundamentals/shared-flows).
 
@@ -44,7 +47,7 @@ Example API proxies are contained in the [examples](examples) directory. The exa
 * nr-metric-api-sharedflow
 * nr-trace-api-sharedflow
 
-To install the shared flows:
+To install the shared flows independently:
 1. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow](sharedflows/src/gateway/nr-instrumentation-obfuscation-sharedflow) directory.
 2. Execute the [deploy.sh](sharedflows/src/gateway/nr-instrumentation-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-instrumentation-sharedflow](sharedflows/src/gateway/nr-instrumentation-sharedflow) directory.
 3. Execute the [deploy.sh](sharedflows/src/gateway/nr-log-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-log-api-sharedflow](sharedflows/src/gateway/nr-log-api-sharedflow) directory.
@@ -52,8 +55,8 @@ To install the shared flows:
 5. Execute the [deploy.sh](sharedflows/src/gateway/nr-metric-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-metric-api-sharedflow](sharedflows/src/gateway/nr-metric-api-sharedflow) directory.
 6. Execute the [deploy.sh](sharedflows/src/gateway/nr-trace-api-sharedflow/deploy.sh) script from within the [sharedflows/src/gateway/nr-trace-api-sharedflow](sharedflows/src/gateway/nr-trace-api-sharedflow) directory.
 
-### Example flow
-To install the example flows:
+### Example proxies
+To install the example proxies independently:
 1. Execute the [deploy.sh](examples/newrelic-log/deploy.sh) script from within the [examples/newrelic-log](examples/newrelic-log) directory.
 2. Execute the [deploy.sh](examples/newrelic-logging/deploy.sh) script from within the [examples/newrelic-logging](examples/newrelic-logging) directory.
 3. Execute the [deploy.sh](examples/newrelic-metric/deploy.sh) script from within the [examples/newrelic-metric](examples/newrelic-metric) directory.
