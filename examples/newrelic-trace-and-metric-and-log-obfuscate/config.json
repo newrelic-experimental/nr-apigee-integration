@@ -20,7 +20,7 @@
                   "tokens": [
                       {
                           "xpath": "/TargetEndpoint/HTTPTargetConnection/URL",
-                          "value": "https://swapi.dev/api/people/1/?format=json"
+                          "value": "https://swapi.py4e.com/api/people/1/?format=json"
                       }
                   ]
               }
