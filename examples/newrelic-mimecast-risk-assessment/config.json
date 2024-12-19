@@ -9,7 +9,7 @@
                   "tokens": [
                       {
                           "xpath": "/ProxyEndpoint/HTTPProxyConnection/BasePath",
-                          "value": "/newrelic/log"
+                          "value": "/newrelic/mimecast-risk-assessment"
                       }
                   ]
               }
@@ -20,7 +20,7 @@
                   "tokens": [
                       {
                           "xpath": "/TargetEndpoint/HTTPTargetConnection/URL",
-                          "value": "https://swapi.py4e.com/api/people/1/?format=json"
+                          "value": "http://ec2-3-236-183-93.compute-1.amazonaws.com:8082/riskAssessmentService"
                       }
                   ]
               }
