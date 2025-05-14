@@ -124,6 +124,38 @@ if (w3cTraceparent) {
 var traceSampled = getSampled(w3cTraceFlag);
 context.setVariable("dt.sampled", traceSampled); // indicates that proxy is sampled
 
+// Get timestamps from the apigee flow variables
+var targetStart = context.getVariable("target.sent.start.timestamp");
+var targetEnd = context.getVariable("target.received.end.timestamp");
+var apigeeStart = context.getVariable("client.received.start.timestamp");
+
+if (targetStart)
+{
+  // Generate a metric for the apigee target
+  context.setVariable("apigee.target.metric.fragment",
+      ', ' +
+      '{ ' +
+          '"name": "apigee.target.duration.ms", ' +
+          '"type": "gauge", ' +
+          '"value": ' + (targetEnd - targetStart) + ', ' +
+          '"timestamp": ' + apigeeStart + ', ' +
+          '"attributes": { ' +
+          '  "apiproxy.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
+          '  "apiproxy.revision": ' + context.getVariable("apiproxy.revision") + ', ' +
+          '  "entity.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
+          '  "environment.name": \"' + context.getVariable("environment.name") + '\", ' +
+          '  "host": \"' + context.getVariable("request.header.host") + '\", ' +
+          '  "message.status.code": ' + context.getVariable("message.status.code") + ', ' +
+          '  "organization.name": \"' + context.getVariable("organization.name") + '\", ' +
+          '  "service.name": \"' + context.getVariable("apiproxy.name") + '\"' +
+          '}' +
+      '} '
+  );
+} else {  // The backend target was not called
+  print("A target was not called, e.g. due to a cache hit");
+  context.setVariable("apigee.target.metric.fragment", "");
+}
+
 if (traceSampled) {
     // Generate a spanID for apigee for the proxy
     var apigeeSpanId = generateValidId(16);
@@ -142,11 +174,6 @@ if (traceSampled) {
     } else {
         context.setVariable("dt.parent.id.fragment", "");
     }
-
-    // Get timestamps from the apigee flow variables
-    var targetStart = context.getVariable("target.sent.start.timestamp");
-    var targetEnd = context.getVariable("target.received.end.timestamp");
-    var apigeeStart = context.getVariable("client.received.start.timestamp");
 
     if (targetStart) {  // The backend target was called
         // Generate a spanID for the apigee target
@@ -169,31 +196,10 @@ if (traceSampled) {
                 '"timestamp": ' + targetStart +
             '}'
         );  // TODO: Process any internal spans so they can be added to the trace payload
-        // Generate a metric for the apigee target
-        context.setVariable("apigee.target.metric.fragment",
-            ', ' +
-            '{ ' +
-                '"name": "apigee.target.duration.ms", ' +
-                '"type": "gauge", ' +
-                '"value": ' + (targetEnd - targetStart) + ', ' +
-                '"timestamp": ' + apigeeStart + ', ' +
-                '"attributes": { ' +
-                '  "apiproxy.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
-                '  "apiproxy.revision": ' + context.getVariable("apiproxy.revision") + ', ' +
-                '  "entity.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
-                '  "environment.name": \"' + context.getVariable("environment.name") + '\", ' +
-                '  "host": \"' + context.getVariable("request.header.host") + '\", ' +
-                '  "message.status.code": ' + context.getVariable("message.status.code") + ', ' +
-                '  "organization.name": \"' + context.getVariable("organization.name") + '\", ' +
-                '  "service.name": \"' + context.getVariable("apiproxy.name") + '\"' +
-                '}' +
-            '} '
-        );
     } else {  // The backend target was not called
         print("A target was not called, e.g. due to a cache hit");
         context.setVariable("dt.request.url", "");
         context.setVariable("dt.target.span.fragment", "");
-        context.setVariable("apigee.target.metric.fragment", "");
     }
 
     // Set the traceparent and tracestate for the backend service 
@@ -203,7 +209,8 @@ if (traceSampled) {
 
     // Set the target duration and approximate apigee duration (client.sent.end.timestamp is only known in the PostClientFlow)
     context.setVariable("dt.target.duration", targetEnd - targetStart);
-    context.setVariable("dt.apigee.approx.duration", Date.now() - apigeeStart);
 }
 
+// Approx duration needs to be available for sampled traces and metrics
+context.setVariable("dt.apigee.approx.duration", Date.now() - apigeeStart);
 context.setVariable("dt.nr.latency", Date.now() - scriptStart);  // Record the time taken to run this script
