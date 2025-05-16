@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ServiceCallout async="true" continueOnError="true" enabled="true" name="SC-NRLogAPI">
-    <DisplayName>SC-NRLogAPI</DisplayName>
-    <Properties/>
-    <Request clearPayload="true">
-        <Set>
-            <Headers>
-                <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
-            </Headers>
-            <Verb>POST</Verb>
-            <Payload contentType="application/json">
+  <DisplayName>SC-NRLogAPI</DisplayName>
+  <Properties/>
+  <Request clearPayload="true">
+    <Set>
+      <Headers>
+        <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
+      </Headers>
+      <Verb>POST</Verb>
+      <Payload contentType="application/json">
                 [
                   {
                     "common": {
@@ -18,6 +18,7 @@
                         "organization.name": "{organization.name}",
                         "proxy.client.ip": "{proxy.client.ip}",
                         "target.ip": "{target.ip}"
+                        {nr.tags}
                       }
                     },
                     "logs": [{
@@ -46,11 +47,11 @@
                   }
                 ]
             </Payload>
-        </Set>
-        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
-    </Request>
-    <HTTPTargetConnection>
-        <Properties/>
-        <URL>replaced_by_config_json</URL>
-    </HTTPTargetConnection>
+    </Set>
+    <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  </Request>
+  <HTTPTargetConnection>
+    <Properties/>
+    <URL>https://log-api.newrelic.com/log/v1</URL>
+  </HTTPTargetConnection>
 </ServiceCallout>

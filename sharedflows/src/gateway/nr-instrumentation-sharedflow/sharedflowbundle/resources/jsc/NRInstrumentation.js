@@ -90,6 +90,26 @@ function getSampled(traceFlag) {
     return isSampled;
 };
 
+function getTags() {
+  var formattedTags = "";
+  if (String(properties.nrTags).length > 0)
+  {
+    // Split the array by comma. If a comma is not included, the array should only have a single tag.
+    var tagArray = String(properties.nrTags).split(",");
+    for (var i=0; i < tagArray.length; i++) {
+      var splitTag = tagArray[i].split("=");
+      if (splitTag.length != 2)
+      {
+        print("Tag configuration did not follow expected tagName=tagValue pattern. Tags will be ignored.");
+        break;
+      } else {
+          formattedTags = formattedTags + ', "tags.'+splitTag[0].trim()+'": "'+splitTag[1].trim()+'"';
+      }
+    }
+  }
+  context.setVariable("nr.tags", formattedTags);
+}
+
 const W3C_VER_NUM = "00";
 const W3C_TRACE_NOT_SAMPLED_FLAG = "00";
 const W3C_TRACE_SAMPLED_FLAG = "01";
@@ -120,6 +140,9 @@ if (w3cTraceparent) {
     print("W3C trace context not included on inbound request");
 }
 
+// Set tag attributes if configured
+getTags();
+
 // Determine if the trace is to be sampled
 var traceSampled = getSampled(w3cTraceFlag);
 context.setVariable("dt.sampled", traceSampled); // indicates that proxy is sampled
@@ -138,17 +161,7 @@ if (targetStart)
           '"name": "apigee.target.duration.ms", ' +
           '"type": "gauge", ' +
           '"value": ' + (targetEnd - targetStart) + ', ' +
-          '"timestamp": ' + apigeeStart + ', ' +
-          '"attributes": { ' +
-          '  "apiproxy.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
-          '  "apiproxy.revision": ' + context.getVariable("apiproxy.revision") + ', ' +
-          '  "entity.name": \"' + context.getVariable("apiproxy.name") + '\", ' +
-          '  "environment.name": \"' + context.getVariable("environment.name") + '\", ' +
-          '  "host": \"' + context.getVariable("request.header.host") + '\", ' +
-          '  "message.status.code": ' + context.getVariable("message.status.code") + ', ' +
-          '  "organization.name": \"' + context.getVariable("organization.name") + '\", ' +
-          '  "service.name": \"' + context.getVariable("apiproxy.name") + '\"' +
-          '}' +
+          '"timestamp": ' + apigeeStart + 
       '} '
   );
 } else {  // The backend target was not called

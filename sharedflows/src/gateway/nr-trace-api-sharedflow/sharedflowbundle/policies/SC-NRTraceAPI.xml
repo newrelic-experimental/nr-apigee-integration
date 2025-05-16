@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ServiceCallout async="true" continueOnError="true" enabled="true" name="SC-NRTraceAPI">
-    <DisplayName>SC-NRTraceAPI</DisplayName>
-    <Properties/>
-    <Request clearPayload="true">
-        <Set>
-            <Headers>
-                <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
-                <Header name="Data-Format">newrelic</Header>
-                <Header name="Data-Format-Version">1</Header>
-            </Headers>
-            <Verb>POST</Verb>
-            <Payload contentType="application/json">
+  <DisplayName>SC-NRTraceAPI</DisplayName>
+  <Properties/>
+  <Request clearPayload="true">
+    <Set>
+      <Headers>
+        <Header name="Api-Key">{propertyset.NewRelicPropSet.LICENSE_KEY}</Header>
+        <Header name="Data-Format">newrelic</Header>
+        <Header name="Data-Format-Version">1</Header>
+      </Headers>
+      <Verb>POST</Verb>
+      <Payload contentType="application/json">
                 [
                   {
                     "common": {
@@ -33,6 +33,7 @@
                         "request.url": "{dt.request.url}",
                         "service.name": "{apiproxy.name}",
                         "target.url": "{target.url}"
+                        {nr.tags}
                       }
                     },
                     "spans": [
@@ -54,11 +55,11 @@
                   }
                 ]
             </Payload>
-        </Set>
-        <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
-    </Request>
-    <HTTPTargetConnection>
-        <Properties/>
-        <URL>replaced_by_config_json</URL>
-    </HTTPTargetConnection>
+    </Set>
+    <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  </Request>
+  <HTTPTargetConnection>
+    <Properties/>
+    <URL>https://trace-api.newrelic.com/trace/v1</URL>
+  </HTTPTargetConnection>
 </ServiceCallout>
