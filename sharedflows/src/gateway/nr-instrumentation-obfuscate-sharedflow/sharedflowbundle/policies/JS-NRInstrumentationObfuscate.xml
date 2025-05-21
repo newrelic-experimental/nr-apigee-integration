@@ -17,6 +17,13 @@
             Rate must be in the range [0.0,1.0]. When not provided rate will be set to 1.0 (maximum rate possible).
         -->
         <Property name='tracesSamplerArg'>replaced_by_config_json</Property>
+        <!--
+        (Optional) Include any tags that should be added to metrics, logs, and traces in the format of:
+        tag1=value1,tag2=value2,tag3=value3
+        To not include tags please define the property as <Property name="nrTags"/>
+        Example with tags: <Property name="nrTags">tag1=value1,tag2=value2,tag3=value3</Property>
+        -->
+        <Property name='nrTags'>replaced_by_config_json</Property>
     </Properties>
     <ResourceURL>jsc://NRInstrumentationObfuscate.js</ResourceURL>
 </Javascript>

@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <SharedFlow name="default">
-    <Step>
-        <Name>SC-NRMetricAPI</Name>
-        <Condition>(dt.sampled = true)</Condition>
-    </Step>
+  <Step>
+    <Name>SC-NRMetricAPI</Name>
+    <Condition>(dt.nr.latency IsNot null)</Condition>
+  </Step>
 </SharedFlow>
