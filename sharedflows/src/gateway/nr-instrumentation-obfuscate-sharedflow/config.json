@@ -13,6 +13,10 @@
             {
               "xpath": "/Javascript/Properties/Property[@name='tracesSamplerArg']",
               "value": 1.0
+            },
+            {
+              "xpath": "/Javascript/Properties/Property[@name='nrTags']",
+              "value": ""
             }
           ]
         }

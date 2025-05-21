@@ -23,7 +23,7 @@
         To not include tags please define the property as <Property name="nrTags"/>
         Example with tags: <Property name="nrTags">tag1=value1,tag2=value2,tag3=value3</Property>
         -->
-        <Property name="nrTags"/>
+        <Property name='nrTags'>replaced_by_config_json</Property>
     </Properties>
     <ResourceURL>jsc://NRInstrumentationObfuscate.js</ResourceURL>
 </Javascript>
