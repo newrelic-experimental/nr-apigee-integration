@@ -178,6 +178,12 @@ if (w3cTraceparent === null) {
 // ALWAYS generate proxy span ID for trace propagation
 var apigeeSpanId = generateValidId(16);
 
+// Generate target span ID if backend will be called (before it's referenced in sampling block)
+var targetSpanId;
+if (targetStart) {
+    targetSpanId = generateValidId(16);
+}
+
 // ALWAYS set trace.id for context propagation
 context.setVariable("dt.trace.id", w3cTraceId); // the trace id, same for all spans
 
@@ -225,11 +231,8 @@ if (traceSampled) {
 // W3C Trace Context Section 4.2 compliance:
 // Determine parent-id for traceparent propagation based on whether backend target is called
 var propagationParentId;
-var targetSpanId; // Declare in outer scope
-
 if (targetStart) {
-    // Backend target is called - generate target span ID for propagation
-    targetSpanId = generateValidId(16);
+    // Backend target is called - use already-generated target span ID
     propagationParentId = targetSpanId;
 } else {
     // No backend target (e.g., cache hit) - use apigee span ID for propagation
