@@ -219,7 +219,7 @@ if (targetStart)
           '"name": "apigee.target.duration.ms", ' +
           '"type": "gauge", ' +
           '"value": ' + (targetEnd - targetStart) + ', ' +
-          '"timestamp": ' + apigeeStart + 
+          '"timestamp": ' + apigeeStart +
       '} '
   );
 } else {  // The backend target was not called
@@ -227,18 +227,29 @@ if (targetStart)
   context.setVariable("apigee.target.metric.fragment", "");
 }
 
+// W3C Trace Context Section 4.2 compliance:
+// ALWAYS generate trace-id if none exists, regardless of sampling decision
+if (w3cTraceparent === null) {
+    w3cTraceId = generateValidId(32);
+}
+
+// ALWAYS generate proxy span ID for trace propagation
+var apigeeSpanId = generateValidId(16);
+
+// Generate target span ID if backend will be called (before it's referenced in sampling block)
+var targetSpanId;
+if (targetStart) {
+    targetSpanId = generateValidId(16);
+}
+
+// ALWAYS set trace.id for context propagation
+context.setVariable("dt.trace.id", w3cTraceId); // the trace id, same for all spans
+
 if (traceSampled) {
-    // Generate a spanID for apigee for the proxy
-    var apigeeSpanId = generateValidId(16);
+    // Record Apigee span ID for New Relic span recording
     context.setVariable("dt.apigee.span.id", apigeeSpanId); // a span id to cover the whole apigee flow
 
-    // Creates a W3C traceId if there is no traceparent
-    if (w3cTraceparent === null) {
-        w3cTraceId = generateValidId(32);
-    }
-
     // Set distributed trace specific context variables
-    context.setVariable("dt.trace.id", w3cTraceId); // the trace id, same for all spans
     if (w3cParentId) {
         context.setVariable("dt.parent.id.fragment", ",\"parent.id\": \"" + w3cParentId + "\"");
         // context.setVariable("dt.parent.id.fragment", `,\"parent.id\": \"${w3cParentId}\"`);  // Template literals require Rhino Javascript 1.7.14
@@ -247,8 +258,7 @@ if (traceSampled) {
     }
 
     if (targetStart) {  // The backend target was called
-        // Generate a spanID for the apigee target
-        var targetSpanId = generateValidId(16);
+        // Record target span data for New Relic
         context.setVariable("dt.target.span.id", targetSpanId); // a span id to just cover the target request
         context.setVariable("dt.request.url", obfuscatePath(regExConfig, context.getVariable("request.url")));
         context.setVariable("dt.target.span.fragment",
@@ -267,20 +277,38 @@ if (traceSampled) {
                 '"timestamp": ' + targetStart +
             '}'
         );  // TODO: Process any internal spans so they can be added to the trace payload
+        // Set the target duration
+        context.setVariable("dt.target.duration", targetEnd - targetStart);
     } else {  // The backend target was not called
         print("A target was not called, e.g. due to a cache hit");
         context.setVariable("dt.request.url", "");
         context.setVariable("dt.target.span.fragment", "");
     }
+}
 
-    // Set the traceparent and tracestate for the backend service 
-    context.setVariable("request.header.traceparent", W3C_VER_NUM + "-" + w3cTraceId + "-" + targetSpanId + "-" + traceSampled ? W3C_TRACE_SAMPLED_FLAG : W3C_TRACE_NOT_SAMPLED_FLAG);
-    // Preserve tracestate
-    //context.setVariable("request.header.tracestate", "");
+// W3C Trace Context Section 4.2 compliance:
+// Determine parent-id for traceparent propagation based on whether backend target is called
+var propagationParentId;
+if (targetStart) {
+    // Backend target is called - use already-generated target span ID
+    propagationParentId = targetSpanId;
+} else {
+    // No backend target (e.g., cache hit) - use apigee span ID for propagation
+    propagationParentId = apigeeSpanId;
+}
 
-    // Set the target duration and approximate apigee duration (client.sent.end.timestamp is only known in the PostClientFlow)
-    context.setVariable("dt.target.duration", targetEnd - targetStart);
-    
+// ALWAYS set traceparent header for downstream services (W3C Section 4.2)
+// The sampled flag indicates whether spans are being recorded, but context is always propagated
+var sampledFlag = traceSampled ? W3C_TRACE_SAMPLED_FLAG : W3C_TRACE_NOT_SAMPLED_FLAG;
+context.setVariable("request.header.traceparent", W3C_VER_NUM + "-" + w3cTraceId + "-" + propagationParentId + "-" + sampledFlag);
+
+// Handle tracestate per W3C spec
+if (w3cTraceparent && w3cTracestate) {
+    // Valid tracestate exists with traceparent - propagate it
+    context.setVariable("request.header.tracestate", w3cTracestate);
+} else if (!w3cTraceparent && w3cTracestate) {
+    // Invalid: tracestate without traceparent - discard per W3C spec Section 4.2
+    print("Discarding tracestate header - no traceparent received");
 }
 
 // Approx duration needs to be available for sampled traces and metrics
